@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 — 2026-11-11
+
+- Publish through npm trusted publishing (OIDC); no runtime changes.
+
 ## 0.1.0 — 2026-11-11
 
 - Initial release: Snow Storm light and Polar Night dark palettes, Frost

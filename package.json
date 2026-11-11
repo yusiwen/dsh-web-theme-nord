@@ -1,6 +1,6 @@
 {
   "name": "dsh-web-theme-nord",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Nord color theme for the DeepSeek Harness Web GUI: Snow Storm light, Polar Night dark, Frost accents, and Aurora syntax colors.",
   "type": "module",
   "main": "./lib/index.js",
