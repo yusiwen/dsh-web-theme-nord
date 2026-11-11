@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    env:
+      # Optional bootstrap credential. npm trusted publishing can only be
+      # configured for a package that already exists, so the first publish
+      # needs a token (or one manual publish). After 0.1.0 exists and the
+      # trusted publisher is configured, delete this secret; later releases
+      # authenticate through OIDC without it.
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - run: npm run check
+
+      - name: Read the package version
+        id: package
+        run: echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the tag matches the package version
+        run: test "v${{ steps.package.outputs.version }}" = "$GITHUB_REF_NAME"
+
+      - name: Check whether this version is already published
+        id: published
+        run: |
+          if npm view "dsh-web-theme-nord@${{ steps.package.outputs.version }}" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish with the bootstrap NPM_TOKEN
+        if: steps.published.outputs.exists != 'true' && env.NPM_TOKEN != ''
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish with OIDC trusted publishing
+        if: steps.published.outputs.exists != 'true' && env.NPM_TOKEN == ''
+        run: npm publish --access public --provenance
+
+      - name: Create the GitHub release
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
