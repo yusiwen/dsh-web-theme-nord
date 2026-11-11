@@ -1,0 +1,6 @@
+# Host half is a no-op row: the theme lives entirely in the browser bundle,
+# which package.json's `dsh.client` declaration serves. The row exists so the
+# package is part of the composed profile and its client module is loaded.
+- insert:
+    - id: web-theme-nord
+      name: dsh-web-theme-nord
