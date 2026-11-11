@@ -29,6 +29,14 @@
   ],
   "author": "Siwen Yu <yusiwen@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yusiwen/dsh-web-theme-nord.git"
+  },
+  "homepage": "https://github.com/yusiwen/dsh-web-theme-nord#readme",
+  "bugs": {
+    "url": "https://github.com/yusiwen/dsh-web-theme-nord/issues"
+  },
   "publishConfig": {
     "access": "public"
   },
